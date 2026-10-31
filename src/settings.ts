@@ -1,3 +1,4 @@
+import { isForgejoRepository } from "./features/forgejo";
 import { checksumForString } from "./features/githubUtils";
 import type BratPlugin from "./main";
 
@@ -32,6 +33,7 @@ export interface Settings {
 	/** @deprecated Tokens are now stored in SecretStorage (Obsidian 1.11.4+) */
 	personalAccessToken?: string;
 	globalTokenName?: string; // name of secret in SecretStorage for global PAT
+	forgejoTokenName?: string; // name of secret in SecretStorage for Forgejo repositories
 	selectLatestPluginVersionByDefault: boolean;
 	allowIncompatiblePlugins: boolean;
 }
@@ -49,10 +51,19 @@ export const DEFAULT_SETTINGS: Settings = {
 	debuggingMode: false,
 	notificationsEnabled: true,
 	globalTokenName: "",
+	forgejoTokenName: "",
 	personalAccessToken: "",
 	selectLatestPluginVersionByDefault: false,
 	allowIncompatiblePlugins: false,
 };
+
+/**
+ * The secret to use when a repository has no token of its own. Kept per forge so
+ * a GitHub token is never sent to a Forgejo server, or the other way round.
+ */
+export function defaultTokenName(settings: Settings, repositoryPath: string): string | undefined {
+	return isForgejoRepository(repositoryPath) ? settings.forgejoTokenName : settings.globalTokenName;
+}
 
 /**
  * Adds a plugin for beta testing to the data.json file of this  plugin

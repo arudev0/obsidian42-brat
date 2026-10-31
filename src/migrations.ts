@@ -19,7 +19,7 @@ async function hasMigrationRun(
 ): Promise<boolean> {
 	try {
 		const logData = await app.vault.adapter.read(
-			`${app.vault.configDir}/plugins/obsidian42-brat/${MIGRATION_LOG_KEY}.json`,
+			`${app.vault.configDir}/plugins/brat-forgejo/${MIGRATION_LOG_KEY}.json`,
 		);
 		const log = JSON.parse(logData) as MigrationLog;
 		return log.appliedMigrations.includes(migrationId);
@@ -36,7 +36,7 @@ async function markMigrationComplete(
 	migrationId: string,
 ): Promise<void> {
 	try {
-		const logPath = `${app.vault.configDir}/plugins/obsidian42-brat/${MIGRATION_LOG_KEY}.json`;
+		const logPath = `${app.vault.configDir}/plugins/brat-forgejo/${MIGRATION_LOG_KEY}.json`;
 		let log: MigrationLog = { appliedMigrations: [] };
 
 		try {

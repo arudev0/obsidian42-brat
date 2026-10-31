@@ -8,6 +8,12 @@ import {
 	GHRateLimitError,
 	GitHubResponseError,
 } from "../utils/GitHubAPIErrors";
+import {
+	forgejoAuthorization,
+	grabForgejoRelease,
+	isForgejoRepository,
+	isPrivateForgejoRepository,
+} from "./forgejo";
 
 export interface ReleaseVersion {
 	version: string; // The tag name of the release
@@ -258,6 +264,9 @@ export const isPrivateRepo = async (
 ): Promise<boolean> => {
 	const URL = `https://api.github.com/repos/${repository}`;
 	try {
+		if (isForgejoRepository(repository)) {
+			return await isPrivateForgejoRepository(repository, accessToken);
+		}
 		const response: RequestUrlResponse = await gitHubRequest({
 			url: URL,
 			headers: accessToken
@@ -294,6 +303,10 @@ export const fetchReleaseVersions = async (
 ): Promise<ReleaseVersion[] | null> => {
 	const apiUrl = `https://api.github.com/repos/${repository}/releases`;
 	try {
+		if (isForgejoRepository(repository)) {
+			const release = await grabForgejoRelease(repository, accessToken);
+			return release ? [{ version: release.tag_name, prerelease: false }] : null;
+		}
 		const response: RequestUrlResponse = await gitHubRequest({
 			url: `${apiUrl}?per_page=100`,
 			headers: accessToken
@@ -355,7 +368,9 @@ export const grabReleaseFileFromRepository = async (
 
 		// Authenticated requests get a higher rate limit, only needed for private repositories here
 		if (isPrivate && personalAccessToken) {
-			headers.Authorization = `Token ${personalAccessToken}`;
+			headers.Authorization = release.forgejo
+				? forgejoAuthorization(personalAccessToken)
+				: `Token ${personalAccessToken}`;
 		}
 
 		// Download from the asset URL if it's a private repo, otherwise use the browser download URL
@@ -522,6 +537,7 @@ export type Release = {
 	name: string;
 	published_at: string;
 	prerelease: boolean;
+	forgejo?: boolean; // Files come from a Forgejo repository root, see forgejo.ts
 	assets: {
 		name: string;
 		url: string;
@@ -562,6 +578,9 @@ export const grabReleaseFromRepository = async (
 	personalAccessToken?: string,
 ): Promise<Release | null> => {
 	try {
+		if (isForgejoRepository(repositoryPath)) {
+			return await grabForgejoRelease(repositoryPath, personalAccessToken);
+		}
 		const apiUrl =
 			version && version !== "latest"
 				? `https://api.github.com/repos/${repositoryPath}/releases/tags/${version}`

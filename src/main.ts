@@ -15,8 +15,8 @@ import { logger } from "./utils/logging";
 import { toastMessage } from "./utils/notifications";
 
 export default class BratPlugin extends Plugin {
-	APP_NAME = "BRAT";
-	APP_ID = "obsidian42-brat";
+	APP_NAME = "BRAT Forgejo";
+	APP_ID = "brat-forgejo";
 	settings: Settings = DEFAULT_SETTINGS;
 	settingsTab: BratSettingsTab = new BratSettingsTab(this.app, this);
 	betaPlugins = new BetaPlugins(this);
@@ -27,7 +27,7 @@ export default class BratPlugin extends Plugin {
 		console.debug(`loading ${this.APP_NAME}`);
 
 		addIcons();
-		this.addRibbonIcon("BratIcon", "BRAT", () => {
+		this.addRibbonIcon("BratIcon", this.APP_NAME, () => {
 			this.commands.ribbonDisplayCommands();
 		});
 
@@ -39,7 +39,7 @@ export default class BratPlugin extends Plugin {
 				this.app.workspace.onLayoutReady(() => {
 					this.addSettingTab(this.settingsTab);
 
-					this.registerObsidianProtocolHandler("brat", this.obsidianProtocolHandler);
+					this.registerObsidianProtocolHandler("brat-forgejo", this.obsidianProtocolHandler);
 
 					this.betaPlugins.checkIncompatiblePlugins();
 

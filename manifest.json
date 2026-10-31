@@ -1,14 +1,11 @@
 {
-    "id": "obsidian42-brat",
-    "name": "BRAT",
-    "version": "2.2.0",
+    "id": "brat-forgejo",
+    "name": "BRAT Forgejo",
+    "version": "2.3.0",
     "minAppVersion": "1.11.4",
-    "description": "Easily install plugin beta versions for testing.",
-    "author": "TfTHacker",
-    "authorUrl": "https://github.com/TfTHacker",
-    "helpUrl": "https://tfthacker.com/BRAT",
-    "isDesktopOnly": false,
-    "fundingUrl": {
-        "Visit my site": "https://tfthacker.com"
-    }
+    "description": "BRAT with Forgejo support: install plugin beta versions from GitHub releases or Forgejo repositories.",
+    "author": "TfTHacker, arudev",
+    "authorUrl": "https://github.com/Arutyun2312",
+    "helpUrl": "https://github.com/Arutyun2312/obsidian42-brat/tree/forgejo",
+    "isDesktopOnly": false
 }

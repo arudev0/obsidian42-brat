@@ -7,7 +7,7 @@ import { createGitHubResourceLink } from "src/utils/utils";
 import type BetaPlugins from "../features/BetaPlugins";
 import { getTranslations } from "../i18n";
 import type BratPlugin from "../main";
-import { existBetaPluginInList, updatePluginTokenName } from "../settings";
+import { defaultTokenName, existBetaPluginInList, updatePluginTokenName } from "../settings";
 import { toastMessage } from "../utils/notifications";
 import { promotionalLinks } from "./Promotional";
 import { VersionSuggestModal } from "./VersionSuggestModal";
@@ -441,10 +441,11 @@ export default class AddNewPluginModal extends Modal {
 				if (tokenValue) {
 					tokenToUse = tokenValue;
 				}
-			} else if (this.plugin.settings.globalTokenName) {
-				const globalToken = this.plugin.app.secretStorage.getSecret(this.plugin.settings.globalTokenName);
-				if (globalToken) {
-					tokenToUse = globalToken;
+			} else {
+				const defaultSecret = defaultTokenName(this.plugin.settings, scrubbedAddress);
+				const defaultToken = defaultSecret ? this.plugin.app.secretStorage.getSecret(defaultSecret) : "";
+				if (defaultToken) {
+					tokenToUse = defaultToken;
 				}
 			}
 
@@ -534,7 +535,8 @@ export default class AddNewPluginModal extends Modal {
 		// Match either format:
 		// 1. user/repo
 		// 2. https://github.com/user/repo
-		const githubPattern = /^(?:https?:\/\/github\.com\/)?([a-zA-Z0-9._-]+)\/([a-zA-Z0-9._-]+)$/i;
+		// 3. https://forgejo.example.com/user/repo
+		const githubPattern = /^(?:https?:\/\/[a-z0-9.:-]+\/)?([a-zA-Z0-9._-]+)\/([a-zA-Z0-9._-]+)$/i;
 
 		return githubPattern.test(cleanAddress);
 	}

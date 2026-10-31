@@ -1,6 +1,7 @@
 import type {} from "@obsidian-typings/obsidian-public-1.11.4";
 import type { SettingTab } from "obsidian";
 import type { GraduatedPlugin } from "../features/BetaPlugins";
+import { repositoryUrl } from "../features/forgejo";
 import type { CommunityPlugin, CommunityTheme } from "../features/githubUtils";
 import { grabCommmunityPluginList, grabCommmunityThemesList } from "../features/githubUtils";
 import { themesCheckAndUpdates } from "../features/themes";
@@ -177,7 +178,7 @@ export default class PluginCommands {
 					const gfs = new GenericFuzzySuggester(this.plugin);
 					gfs.setSuggesterData(bratList);
 					gfs.display((results) => {
-						if (results.info) window.open(`https://github.com/${results.info as string}`);
+						if (results.info) window.open(repositoryUrl(results.info as string));
 					});
 				}
 			},

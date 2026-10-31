@@ -5,10 +5,11 @@ import { compare as compareVersions, coerce as semverCoerce } from "semver";
 import { confirm } from "src/ui/ConfirmModal";
 import { GHRateLimitError, GitHubResponseError } from "src/utils/GitHubAPIErrors";
 import type BratPlugin from "../main";
-import { addBetaPluginToList } from "../settings";
+import { addBetaPluginToList, defaultTokenName } from "../settings";
 import AddNewPluginModal from "../ui/AddNewPluginModal";
 import { isConnectedToInternet } from "../utils/internetconnection";
 import { toastMessage } from "../utils/notifications";
+import { releaseUrl } from "./forgejo";
 import {
 	grabCommmunityPluginList,
 	grabReleaseFileFromRepository,
@@ -367,8 +368,9 @@ export default class BetaPlugins {
 						10,
 					);
 				}
-			} else if (this.plugin.settings.globalTokenName) {
-				tokenValue = this.plugin.app.secretStorage.getSecret(this.plugin.settings.globalTokenName) || "";
+			} else {
+				const defaultSecret = defaultTokenName(this.plugin.settings, repositoryPath);
+				if (defaultSecret) tokenValue = this.plugin.app.secretStorage.getSecret(defaultSecret) || "";
 			}
 
 			const noticeTimeout = 10;
@@ -587,13 +589,10 @@ export default class BetaPlugins {
 					if (seeIfUpdatedOnly) {
 						// dont update, just report it
 						const msg = `There is an update available for ${primaryManifest.id} from version ${localManifestJson.version} to ${primaryManifest.version}. `;
-						await this.plugin.log(
-							`${msg}[Release Info](https://github.com/${repositoryPath}/releases/tag/${primaryManifest.version})`,
-							true,
-						);
+						await this.plugin.log(`${msg}[Release Info](${releaseUrl(repositoryPath, primaryManifest.version)})`, true);
 						toastMessage(this.plugin, msg, 30, () => {
 							if (primaryManifest) {
-								window.open(`https://github.com/${repositoryPath}/releases/tag/${primaryManifest.version}`);
+								window.open(releaseUrl(repositoryPath, primaryManifest.version));
 							}
 						});
 						return false;
@@ -602,10 +601,10 @@ export default class BetaPlugins {
 					await this.plugin.app.plugins.loadManifests();
 					await this.reloadPlugin(primaryManifest.id);
 					const msg = `${primaryManifest.id}\nPlugin has been updated from version ${localManifestJson.version} to ${primaryManifest.version}. `;
-					await this.plugin.log(`${msg}[Release Info](https://github.com/${repositoryPath}/releases/tag/${primaryManifest.version})`, true);
+					await this.plugin.log(`${msg}[Release Info](${releaseUrl(repositoryPath, primaryManifest.version)})`, true);
 					toastMessage(this.plugin, msg, 30, () => {
 						if (primaryManifest) {
-							window.open(`https://github.com/${repositoryPath}/releases/tag/${primaryManifest.version}`);
+							window.open(releaseUrl(repositoryPath, primaryManifest.version));
 						}
 					});
 					return true;

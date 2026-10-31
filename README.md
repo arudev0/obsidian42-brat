@@ -1,3 +1,21 @@
+# BRAT Forgejo
+
+A fork of [BRAT](https://github.com/TfTHacker/obsidian42-brat) that also installs plugins from
+[Forgejo](https://forgejo.org) (and should work with Gitea, which shares its API). GitHub repositories work as usual.
+
+- **Add a Forgejo plugin** by its full URL, for example `https://forgejo.example.com/owner/plugin`.
+- **Publish a Forgejo plugin** by committing the built `manifest.json`, `main.js` and optional `styles.css` to the root
+  of the default branch. No releases are needed. Raise `version` in `manifest.json` to ship an update.
+- **Private repositories** need a token with the `read:repository` scope, set under Forgejo in the plugin settings. It's
+  kept apart from the GitHub token, so neither is ever sent to the other server.
+- **Pinning a version** isn't available for Forgejo plugins, because only the latest root files exist.
+
+It has its own plugin ID and `obsidian://brat-forgejo` links, so it can run next to the original BRAT.
+
+The original BRAT documentation follows.
+
+---
+
 ![](media/brat.jpg)
 
 # BRAT - Beta Reviewers Auto-update Tester

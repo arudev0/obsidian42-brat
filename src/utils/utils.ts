@@ -1,3 +1,5 @@
+import { repositoryUrl } from "../features/forgejo";
+
 export function createGitHubResourceLink(
 	githubResource: string,
 	optionalText?: string,
@@ -6,7 +8,7 @@ export function createGitHubResourceLink(
 	// eslint-disable-next-line obsidianmd/prefer-active-doc -- BRAT compatibility: activeDocument breaks utility rendering call sites
 	const linkElement = document.createElement("a");
 	linkElement.textContent = githubResource;
-	linkElement.href = `https://github.com/${githubResource}`;
+	linkElement.href = repositoryUrl(githubResource);
 	linkElement.target = "_blank";
 	newLink.appendChild(linkElement);
 	if (optionalText) {

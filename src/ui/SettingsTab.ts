@@ -462,6 +462,18 @@ export class BratSettingsTab extends PluginSettingTab {
 				});
 		});
 
+		// Forgejo token setting
+		new SettingGroup(containerEl).setHeading("Forgejo").addSetting((forgejoSetting) => {
+			forgejoSetting
+				.setName("Forgejo access token")
+				.setDesc("Needed for private Forgejo repositories, with the read:repository scope. Add those repositories by their full URL.");
+			const forgejoToken = new SecretComponentClass(this.plugin.app, forgejoSetting.controlEl);
+			forgejoToken.setValue(this.plugin.settings.forgejoTokenName || "").onChange((secretName: string | null) => {
+				this.plugin.settings.forgejoTokenName = secretName?.trim() || "";
+				void this.plugin.saveSettings();
+			});
+		});
+
 		// Personal access token setting
 		const tokenSection = new SettingGroup(containerEl).setHeading(text.githubPersonalAccessToken.heading);
 
