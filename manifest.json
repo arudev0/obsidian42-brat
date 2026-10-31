@@ -1,11 +1,11 @@
 {
     "id": "brat-forgejo",
     "name": "BRAT Forgejo",
-    "version": "2.3.0",
+    "version": "2.3.1",
     "minAppVersion": "1.11.4",
     "description": "BRAT with Forgejo support: install plugin beta versions from GitHub releases or Forgejo repositories.",
     "author": "TfTHacker, arudev",
-    "authorUrl": "https://github.com/Arutyun2312",
-    "helpUrl": "https://github.com/Arutyun2312/obsidian42-brat/tree/forgejo",
+    "authorUrl": "https://github.com/arudev0",
+    "helpUrl": "https://github.com/arudev0/obsidian42-brat/tree/forgejo",
     "isDesktopOnly": false
 }
